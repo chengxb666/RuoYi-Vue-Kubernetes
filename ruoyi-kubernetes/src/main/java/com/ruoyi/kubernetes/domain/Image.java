@@ -4,7 +4,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
 
 import java.sql.Timestamp;
 
-public class ResourceConfig extends BaseEntity {
+public class Image extends BaseEntity {
 
 
     String creatUser;

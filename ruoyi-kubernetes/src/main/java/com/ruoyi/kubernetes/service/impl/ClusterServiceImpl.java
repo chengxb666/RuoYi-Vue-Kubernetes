@@ -39,9 +39,9 @@ public class ClusterServiceImpl implements ClusterService{
     }
 
     @Override
-    public List<Cluster> queryByName(String clusterCode) {
+    public Cluster queryByName(String clusterCode) {
         if(StringUtils.isNotNull(clusterCode)){
-            List<Cluster> theClusterList = clusterMapper.queryByName(clusterCode);
+            Cluster theClusterList = clusterMapper.queryByName(clusterCode);
             if(StringUtils.isNotNull(theClusterList)){
                 return theClusterList;
             }

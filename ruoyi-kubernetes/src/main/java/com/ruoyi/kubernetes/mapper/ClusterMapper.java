@@ -8,7 +8,7 @@ public interface ClusterMapper {
     public int addCluster(Cluster cluster);
     public int deleteCluster(int clusterid);
     public Cluster queryByid(int clusterid);
-    public List<Cluster> queryByName(String clusterCode);
+    public Cluster queryByName(String clusterCode);
     public int updateCluster(Cluster cluster);
     List<Cluster> query();
 }
