@@ -17,7 +17,7 @@
     </resultMap>
 
     <select id="queryByid" resultMap="ClusterResult">
-        select clusterId, clusterCode, masterUrl, token, status, creatUser, createTime, updateUser, updateTime, remark
+        select cluster_id, cluster_code, master_url, token, status, create_by, create_time, update_by, update_time, remark
         from k8s_cluster
         <where>
             <if test="clusterId!=null">
@@ -27,7 +27,7 @@
     </select>
 
     <select id="queryByName" resultMap="ClusterResult">
-        select clusterId, clusterCode, masterUrl, token, status, creatUser, createTime, updateUser, updateTime, remark
+        select cluster_id, cluster_code, master_url, token, status, create_by, create_time, update_by, update_time, remark
         from k8s_cluster
         <where>
             <if test="clusterCode!=null">
@@ -37,7 +37,7 @@
     </select>
 
     <select id="query" resultMap="ClusterResult">
-        select clusterId, clusterCode, masterUrl, token, status, creatUser, createTime, updateUser, updateTime, remark
+        select cluster_id, cluster_code, master_url, token, status, create_by, create_time, update_by, update_time, remark
         from k8s_cluster
     </select>
 
@@ -77,6 +77,10 @@
 
     <delete id="deleteCluster" parameterType="Integer">
         delete from k8s_cluster where cluster_id = #{clusterId}
+    </delete>
+
+    <delete id="deleteClusterByName" parameterType="String">
+        delete from k8s_cluster where cluster_code = #{clusterCode}
     </delete>
 
 </mapper>

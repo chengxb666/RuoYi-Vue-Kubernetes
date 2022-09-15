@@ -22,8 +22,8 @@ public class ClusterServiceImpl implements ClusterService{
     }
 
     @Override
-    public int deleteCluster(int clusterid) {
-        int row = clusterMapper.deleteCluster(clusterid);
+    public int deleteCluster(String clusterCode) {
+        int row = clusterMapper.deleteClusterByName(clusterCode);
         return row>0?row:0;
     }
 

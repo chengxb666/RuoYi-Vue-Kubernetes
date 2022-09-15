@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.kubernetes.mapper.YamlTemplateMapper">
+    <resultMap type="YamlTemplate" id="YamlTemplateResult">
+        <id     property="yamlTemplateId"      column="yaml_template_id"      />
+        <result property="yamlName"    column="yaml_name"    />
+        <result property="status"    column="status"    />
+        <result property="yamlContent"    column="yaml_content"    />
+        <result property="creatUser"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateUser"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <select id="queryYamlByid" resultMap="YamlTemplateResult">
+        select yaml_template_id, yaml_name, status,yaml_content, create_by, create_time, update_by, update_time, remark
+        from yaml_template
+        <where>
+            <if test="yamlTemplateId!=null">
+                and yaml_template_id = #{yamlTemplateId}
+            </if>
+        </where>
+    </select>
+
+    <select id="queryYamlByName" resultMap="YamlTemplateResult">
+        select yaml_template_id, yaml_name, status,yaml_content, create_by, create_time, update_by, update_time, remark
+        from yaml_template
+        <where>
+            <if test="yamlName!=null">
+                and yaml_name = #{yamlName}
+            </if>
+        </where>
+    </select>
+
+    <select id="query" resultMap="YamlTemplateResult">
+        select yaml_template_id, yaml_name, status,yaml_content, create_by, create_time, update_by, update_time, remark
+        from yaml_template
+    </select>
+
+    <insert id="addYamlTemplate" parameterType="YamlTemplate">
+        insert into yaml_template (
+        <if test="yamlName != null and yamlName != '' ">yaml_name,</if>
+        <if test="status != null and status != '' ">status,</if>
+        <if test="yamlContent != null and yamlContent != '' ">yaml_content,</if>
+        <if test="creatUser != null and creatUser != ''">create_by,</if>
+        <if test="remark != null and remark != ''">remark,</if>
+        create_time
+        )values(
+        <if test="yamlName != null and yamlName != ''">#{yamlName},</if>
+        <if test="status != null and status != ''">#{status},</if>
+        <if test="yamlContent != null and yamlContent != ''">#{yamlContent},</if>
+        <if test="creatUser != null and creatUser != ''">#{creatUser},</if>
+        <if test="remark != null and remark != ''">#{remark},</if>
+        sysdate()
+        )
+    </insert>
+
+    <update id="updateYamlTemplate" parameterType="YamlTemplate">
+        update yaml_template
+        <set>
+            <if test="yamlName != null and yamlName != '' ">yaml_name,</if>
+            <if test="status != null and status != '' ">status,</if>
+            <if test="yamlContent != null and yamlContent != '' ">yaml_content,</if>
+            <if test="updateUser != null and updateUser != ''">update_by = #{updateUser},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            update_time = sysdate()
+        </set>
+        where yaml_template_id = #{yamlTemplateId}
+    </update>
+
+    <delete id="deleteYamlTemplate" parameterType="Integer">
+        delete from yaml_template where yaml_template_id = #{yamlTemplateId}
+    </delete>
+
+    <delete id="deleteYamlTemplateByName" parameterType="String">
+        delete from yaml_template where yaml_name = #{yamlName}
+    </delete>
+
+</mapper>

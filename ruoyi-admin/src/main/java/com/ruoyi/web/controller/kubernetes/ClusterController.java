@@ -25,7 +25,7 @@ public class ClusterController {
     }
 
     @GetMapping("/name/{name}")
-    public List<Cluster> queryClusterByName(@PathVariable("name") String name){
+    public Cluster queryClusterByName(@PathVariable("name") String name){
         return clusterService.queryByName(name);
     }
 
@@ -39,9 +39,9 @@ public class ClusterController {
         return clusterService.updateCluster(cluster);
     }
 
-    @DeleteMapping("/{id}")
-    public int removeCluster(@PathVariable("id") int id){
-        return clusterService.deleteCluster(id);
+    @DeleteMapping("/{name}")
+    public int removeCluster(@PathVariable("name") String name){
+        return clusterService.deleteCluster(name);
     }
 
 }
