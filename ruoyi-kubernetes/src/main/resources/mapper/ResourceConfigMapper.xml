@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.kubernetes.mapper.ResourceConfigMapper">
+    <resultMap type="ResourceConfig" id="ResourceConfigResult">
+        <id     property="resourceConfigId"      column="resource_config_id"      />
+        <result property="resourceConfigName"    column="resource_config_name"    />
+        <result property="resourceName"    column="resource_name"    />
+        <result property="resourceKind"    column="resource_kind"    />
+        <result property="namespaceCode"    column="namespace_code"    />
+        <result property="clusterCode"    column="cluster_code"    />
+        <result property="creatUser"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateUser"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <select id="queryResourceConfigById" resultMap="ResourceConfigResult">
+        select resource_config_id, resource_config_name,resource_name,resource_kind,namespace_code,cluster_code,create_by, create_time, update_by, update_time, remark
+        from resource_config
+        <where>
+            <if test="resourceConfigId!=null">
+                and resource_config_id = #{resourceConfigId}
+            </if>
+        </where>
+    </select>
+
+    <select id="queryResourceConfigByName" resultMap="ResourceConfigResult">
+        select resource_config_id, resource_config_name,resource_name,resource_kind,namespace_code,cluster_code,create_by, create_time, update_by, update_time, remark
+        from resource_config
+        <where>
+            <if test="resourceConfigName!=null">
+                and resource_config_name = #{resourceConfigName}
+            </if>
+        </where>
+    </select>
+
+    <select id="query" resultMap="ResourceConfigResult">
+        select resource_config_id, resource_config_name,resource_name,resource_kind,namespace_code,cluster_code,create_by, create_time, update_by, update_time, remark
+        from resource_config
+    </select>
+
+    <insert id="addResourceConfig" parameterType="ResourceConfig">
+        insert into resource_config (
+        <if test="resourceConfigName != null and resourceConfigName != '' ">resource_config_name,</if>
+        <if test="resourceName != null and resourceName != '' ">resource_name,</if>
+        <if test="resourceKind != null and resourceKind != '' ">resource_kind,</if>
+        <if test="namespaceCode != null and namespaceCode != '' ">namespace_code,</if>
+        <if test="clusterCode != null and clusterCode != '' ">cluster_code,</if>
+        <if test="creatUser != null and creatUser != ''">create_by,</if>
+        <if test="remark != null and remark != ''">remark,</if>
+        create_time
+        )values(
+        <if test="resourceConfigName != null and resourceConfigName != ''">#{resourceConfigName},</if>
+        <if test="resourceName != null and resourceName != ''">#{resourceName},</if>
+        <if test="resourceKind != null and resourceKind != '' ">#{resourceKind},</if>
+        <if test="namespaceCode != null and namespaceCode != '' ">#{namespaceCode},</if>
+        <if test="clusterCode != null and clusterCode != '' ">#{clusterCode},</if>
+        <if test="creatUser != null and creatUser != ''">#{creatUser},</if>
+        <if test="remark != null and remark != ''">#{remark},</if>
+        sysdate()
+        )
+    </insert>
+
+    <update id="updateResourceConfigById" parameterType="ResourceConfig">
+        update resource_config
+        <set>
+            <if test="resourceConfigName != null and resourceConfigName != '' ">resource_config_name = #{resourceConfigName},</if>
+            <if test="resourceName != null and resourceName != '' ">resource_name = #{resourceName},</if>
+            <if test="resourceKind != null and resourceKind != '' ">resource_kind = #{resourceKind},</if>
+            <if test="namespaceCode != null and namespaceCode != '' ">namespace_code = #{namespaceCode},</if>
+            <if test="clusterCode != null and clusterCode != '' ">cluster_code = #{clusterCode},</if>
+            <if test="updateUser != null and updateUser != ''">update_by = #{updateUser},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            update_time = sysdate()
+        </set>
+        where resource_config_id = #{ResourceConfigId}
+    </update>
+
+    <update id="updateResourceConfigByName" parameterType="ResourceConfig">
+        update resource_config
+        <set>
+            <if test="resourceName != null and resourceName != '' ">resource_name = #{resourceName},</if>
+            <if test="resourceKind != null and resourceKind != '' ">resource_kind = #{resourceKind},</if>
+            <if test="namespaceCode != null and namespaceCode != '' ">namespace_code = #{namespaceCode},</if>
+            <if test="clusterCode != null and clusterCode != '' ">cluster_code = #{clusterCode},</if>
+            <if test="updateUser != null and updateUser != ''">update_by = #{updateUser},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            update_time = sysdate()
+        </set>
+        where resource_config_name = #{ResourceConfigName}
+    </update>
+
+    <delete id="deleteResourceConfig" parameterType="Integer">
+        delete from resource_config where resource_config_id = #{ResourceConfigId}
+    </delete>
+
+    <delete id="deleteResourceConfigByName" parameterType="String">
+        delete from resource_config where resource_config_name = #{ResourceConfigName}
+    </delete>
+
+</mapper>

@@ -16,7 +16,7 @@
         <result property="remark"    column="remark"    />
     </resultMap>
 
-    <select id="queryByid" resultMap="ClusterResult">
+    <select id="queryById" resultMap="ClusterResult">
         select cluster_id, cluster_code, master_url, token, status, create_by, create_time, update_by, update_time, remark
         from k8s_cluster
         <where>

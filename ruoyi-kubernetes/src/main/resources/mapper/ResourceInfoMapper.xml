@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.kubernetes.mapper.ResourceInfoMapper">
+    <resultMap type="ResourceInfo" id="ResourceInfoResult">
+        <id     property="resourceId"      column="resource_id"      />
+        <result property="resourceName"    column="resource_name"    />
+        <result property="resourceKind"    column="resource_kind"    />
+        <result property="namespaceCode"    column="namespace_code"    />
+        <result property="YamlName"    column="yaml_name"    />
+        <result property="status"    column="status"    />
+        <result property="yamlContent"    column="yaml_content"    />
+        <result property="creatUser"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateUser"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <select id="queryResourceById" resultMap="ResourceInfoResult">
+        select resource_id, resource_name,resource_kind,namespace_code,yaml_name, status,yaml_content, create_by, create_time, update_by, update_time, remark
+        from resource_info
+        <where>
+            <if test="ResourceId!=null">
+                and resource_id = #{ResourceId}
+            </if>
+        </where>
+    </select>
+
+    <select id="queryResourceByKind" resultMap="ResourceInfoResult">
+        select resource_id, resource_name,resource_kind,namespace_code,yaml_name, status,yaml_content, create_by, create_time, update_by, update_time, remark
+        from resource_info
+        <where>
+            <if test="resourceKind!=null">
+                and resource_kind = #{resourceKind}
+            </if>
+        </where>
+    </select>
+
+    <select id="queryResourceByNameAndKind" resultMap="ResourceInfoResult">
+        select resource_id, resource_name,resource_kind,namespace_code,yaml_name, status,yaml_content, create_by, create_time, update_by, update_time, remark
+        from resource_info
+        <where>
+            <if test="resourceKind!=null">
+                and resource_kind = #{resourceKind}
+            </if>
+            <if test="resourceName!=null">
+                and resource_name = #{resourceName}
+            </if>
+        </where>
+    </select>
+
+    <select id="queryResourceByName" resultMap="ResourceInfoResult">
+        select resource_id, resource_name,resource_kind,namespace_code,yaml_name, status,yaml_content, create_by, create_time, update_by, update_time, remark
+        from resource_info
+        <where>
+            <if test="resourceName!=null">
+                and resource_name = #{resourceName}
+            </if>
+        </where>
+    </select>
+
+    <select id="query" resultMap="ResourceInfoResult">
+        select resource_id, resource_name,resource_kind,namespace_code,yaml_name, status,yaml_content, create_by, create_time, update_by, update_time, remark
+        from resource_info
+    </select>
+
+    <insert id="addResource" parameterType="ResourceInfo">
+        insert into resource_info (
+        <if test="resourceName != null and resourceName != '' ">resource_name,</if>
+        <if test="resourceKind != null and resourceKind != '' ">resource_kind,</if>
+        <if test="namespaceCode != null and namespaceCode != '' ">namespace_code,</if>
+        <if test="status != null and status != '' ">status,</if>
+        <if test="YamlName != null and YamlName != '' ">yaml_name,</if>
+        <if test="yamlContent != null and yamlContent != '' ">yaml_content,</if>
+        <if test="creatUser != null and creatUser != ''">create_by,</if>
+        <if test="remark != null and remark != ''">remark,</if>
+        create_time
+        )values(
+        <if test="resourceName != null and resourceName != ''">#{resourceName},</if>
+        <if test="resourceKind != null and resourceKind != '' ">#{resourceKind},</if>
+        <if test="namespaceCode != null and namespaceCode != '' ">#{namespaceCode},</if>
+        <if test="status != null and status != '' ">#{status},</if>
+        <if test="YamlName != null and YamlName != '' ">#{YamlName},</if>
+        <if test="yamlContent != null and yamlContent != ''">#{yamlContent},</if>
+        <if test="creatUser != null and creatUser != ''">#{creatUser},</if>
+        <if test="remark != null and remark != ''">#{remark},</if>
+        sysdate()
+        )
+    </insert>
+
+    <update id="updateResource" parameterType="ResourceInfo">
+        update resource_info
+        <set>
+            <if test="resourceName != null and resourceName != '' ">resource_name = #{resourceName},</if>
+            <if test="resourceKind != null and resourceKind != '' ">resource_kind = #{resourceKind},</if>
+            <if test="namespaceCode != null and namespaceCode != '' ">namespace_code = #{namespaceCode},</if>
+            <if test="status != null and status != '' ">status = #{status},</if>
+            <if test="YamlName != null and YamlName != '' ">yaml_name = #{YamlName},</if>
+            <if test="yamlContent != null and yamlContent != '' ">yaml_content = #{yamlContent},</if>
+            <if test="updateUser != null and updateUser != ''">update_by = #{updateUser},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            update_time = sysdate()
+        </set>
+        where resource_info_id = #{ResourceInfoId}
+    </update>
+
+    <delete id="deleteResource" parameterType="Integer">
+        delete from resource_info where resource_id = #{ResourceId}
+    </delete>
+
+    <delete id="deleteResourceByName" parameterType="String">
+        delete from resource_info where resource_name = #{resourceName}
+    </delete>
+
+</mapper>

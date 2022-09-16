@@ -1,18 +1,17 @@
 package com.ruoyi.kubernetes.domain;
 
 public enum ResourceKind {
-    pod,
-    deployment,
-    replicaset,
-    statefulset,
-    daemonset,
-    job,
-    cronjob,
-    service,
-    ingress,
-    pv,
-    pvc,
-    configmap,
-    secret,
-    node;
+    Pod,
+    Deployment,
+    ReplicaSet,
+    StatefulSet,
+    DaemonSet,
+    Job,
+    CronJob,
+    Service,
+    Ingress,
+    PersistentVolume,
+    PersistentVolumeClaim,
+    ConfigMap,
+    Secret;
 }

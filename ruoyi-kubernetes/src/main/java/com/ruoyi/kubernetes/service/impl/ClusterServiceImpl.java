@@ -30,7 +30,7 @@ public class ClusterServiceImpl implements ClusterService{
     @Override
     public Cluster queryByid(int clusterid) {
         if(clusterid>0){
-            Cluster theOnlyCluster = clusterMapper.queryByid(clusterid);
+            Cluster theOnlyCluster = clusterMapper.queryById(clusterid);
             if(StringUtils.isNotNull(theOnlyCluster)){
                 return theOnlyCluster;
             }

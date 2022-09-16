@@ -15,7 +15,7 @@
         <result property="remark"    column="remark"    />
     </resultMap>
 
-    <select id="queryYamlByid" resultMap="YamlTemplateResult">
+    <select id="queryYamlById" resultMap="YamlTemplateResult">
         select yaml_template_id, yaml_name, status,yaml_content, create_by, create_time, update_by, update_time, remark
         from yaml_template
         <where>
@@ -61,9 +61,9 @@
     <update id="updateYamlTemplate" parameterType="YamlTemplate">
         update yaml_template
         <set>
-            <if test="yamlName != null and yamlName != '' ">yaml_name,</if>
-            <if test="status != null and status != '' ">status,</if>
-            <if test="yamlContent != null and yamlContent != '' ">yaml_content,</if>
+            <if test="yamlName != null and yamlName != '' ">yaml_name = #{yamlName},</if>
+            <if test="status != null and status != '' ">status = #{status},</if>
+            <if test="yamlContent != null and yamlContent != '' ">yaml_content = #{yamlContent},</if>
             <if test="updateUser != null and updateUser != ''">update_by = #{updateUser},</if>
             <if test="remark != null">remark = #{remark},</if>
             update_time = sysdate()

@@ -1,7 +1,9 @@
 package com.ruoyi.kubernetes.service.impl;
 
+import com.ruoyi.kubernetes.domain.ResourceInfo;
 import com.ruoyi.kubernetes.domain.YamlTemplate;
 import com.ruoyi.kubernetes.mapper.YamlTemplateMapper;
+import com.ruoyi.kubernetes.service.ResourceInfoService;
 import com.ruoyi.kubernetes.service.YamlTemplateService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +29,9 @@ public class YamlTemplateServiceImpl implements YamlTemplateService {
     @Autowired
     private YamlTemplateMapper yamlTemplateMapper;
 
+    @Autowired
+    private ResourceInfoService resourceInfoService;
+
     @Override
     public int addYamlTemplate(YamlTemplate yamlTemplate) {
         return yamlTemplateMapper.addYamlTemplate(yamlTemplate);
@@ -44,7 +49,7 @@ public class YamlTemplateServiceImpl implements YamlTemplateService {
 
     @Override
     public YamlTemplate queryYamlByid(int yamlTemplateid) {
-        return yamlTemplateMapper.queryYamlByid(yamlTemplateid);
+        return yamlTemplateMapper.queryYamlById(yamlTemplateid);
     }
 
     @Override
@@ -67,16 +72,6 @@ public class YamlTemplateServiceImpl implements YamlTemplateService {
 
         try {
             String fileName = file.getOriginalFilename();
-            /**ClassPathResource resource = new ClassPathResource("application.yml");
-            String path = resource.getFile().getParent();
-            File temp = new File(path+"\\yamlUploaded\\");
-            log.info("Resource Path is {}",path);
-            if (!temp.exists()){
-                temp.mkdirs();
-            }
-            File storeYaml = new File(path+"\\yamlUploaded\\"+fileName);
-            file.transferTo(storeYaml);
-            String filePath = storeYaml.getAbsolutePath();*/
             StringBuilder yamlContent = new StringBuilder();
             try (Scanner in = new Scanner(file.getInputStream(),"UTF-8")){
                 while(in.hasNext()){
@@ -91,6 +86,8 @@ public class YamlTemplateServiceImpl implements YamlTemplateService {
             yamlTemplate.setYamlContent(yamlContent.toString());
             yamlTemplate.setStatus("uploaded");
             int addCount = yamlTemplateMapper.addYamlTemplate(yamlTemplate);
+            ResourceInfo resourceInfo = resourceInfoService.declearResource(yamlTemplate);
+            resourceInfoService.createResource(resourceInfo);
             return "上传成功";
         } catch (Exception e) {
             e.printStackTrace();
