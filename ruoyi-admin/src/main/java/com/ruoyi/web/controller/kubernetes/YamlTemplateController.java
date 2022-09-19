@@ -1,5 +1,8 @@
 package com.ruoyi.web.controller.kubernetes;
 
+import com.ruoyi.common.core.controller.BaseController;
+import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.kubernetes.domain.YamlTemplate;
 import com.ruoyi.kubernetes.service.YamlTemplateService;
 import com.ruoyi.kubernetes.utils.ClientUtils;
@@ -19,7 +22,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/yaml")
-public class YamlTemplateController {
+public class YamlTemplateController extends BaseController {
 
     private static final Logger log = LoggerFactory.getLogger(YamlTemplateController.class);
 
@@ -30,8 +33,10 @@ public class YamlTemplateController {
     private ClientUtils clientUtils;
 
     @GetMapping
-    public List<YamlTemplate> findAll(){
-        return yamlTemplateService.query();
+    public TableDataInfo findAll(){
+        startPage();
+        List<YamlTemplate> list = yamlTemplateService.query();
+        return getDataTable(list);
     }
 
     @GetMapping("/id/{id}")
@@ -50,13 +55,13 @@ public class YamlTemplateController {
     }
 
     @PostMapping("upload")
-    public Object upload(@RequestParam("file")MultipartFile file) {
+    public AjaxResult upload(@RequestParam("file")MultipartFile file) {
         if(file.isEmpty()){
-            return "未选择文件";
+            return toAjax(false);
         }
 
         String result = yamlTemplateService.uploadYaml(file);
-        return result;
+        return toAjax(result.equals("上传成功")?true:false);
     }
 
     @PutMapping
@@ -65,7 +70,7 @@ public class YamlTemplateController {
     }
 
     @DeleteMapping("/{name}")
-    public int removeYamlTemplate(@PathVariable("name") String name){
-        return yamlTemplateService.deleteYamlTemplateByName(name);
+    public AjaxResult removeYamlTemplate(@PathVariable("name") String name){
+        return toAjax(yamlTemplateService.deleteYamlTemplateByName(name));
     }
 }
