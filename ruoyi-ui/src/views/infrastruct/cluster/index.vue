@@ -4,7 +4,7 @@
       <el-form ref="elForm" :model="formData" :rules="rules" size="medium" label-width="100px">
         <el-col :span="12">
           <el-form-item label="集群名称" prop="mobile">
-            <el-input v-model="formData.mobile" placeholder="请输入集群名称" :maxlength="11" show-word-limit
+            <el-input v-model="formData.mobile" placeholder="请输入集群的名称" :maxlength="11" show-word-limit
               clearable prefix-icon='el-icon-mobile' :style="{width: '100%'}"></el-input>
           </el-form-item>
         </el-col>

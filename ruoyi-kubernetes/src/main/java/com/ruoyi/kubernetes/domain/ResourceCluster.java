@@ -14,7 +14,7 @@ public class ResourceCluster extends BaseEntity {
     String namespaceCode;
     String clusterCode;
     String status;
-    String yamlContent;
+    String yamlContentName;
     String yamlComitted;
     String creatUser;
     Timestamp createTime;

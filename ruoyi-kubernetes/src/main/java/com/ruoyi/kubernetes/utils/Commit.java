@@ -19,12 +19,14 @@ import io.fabric8.kubernetes.client.dsl.PodResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.List;
 
+@Component
 public class Commit {
 
     @Autowired
@@ -32,7 +34,7 @@ public class Commit {
 
     private static final Logger log = LoggerFactory.getLogger(Commit.class);
 
-    public Boolean CreateWorkLoad(String fileName,String namespace,String targetClusterCode,String action) throws FileNotFoundException {
+    public Boolean DoCommit(String fileName,String namespace,String targetClusterCode,String action) throws FileNotFoundException {
 
         boolean done = false;
 
@@ -47,7 +49,7 @@ public class Commit {
 
         File file = new File(fileName);
         if (!file.exists() || !file.isFile()) {
-            log.error("File {} does not exist", fileName);
+            System.out.println("File {} does not exist" + fileName);
             return false;
         }
 
@@ -134,45 +136,7 @@ public class Commit {
                     log.info("cronjobs {} in namespace {} of cluster {} is {} deleted", cron.getMetadata().getName(),namespace,targetClusterCode,delete);
                     done = true;
                 }
-            } else {
-                log.error("Loaded resource {} is not a valid resourceKind of workload! ", resource);
-                done = false;
-            }
-        }catch (Exception e){
-            log.error(e.getMessage());
-            done = false;
-        }
-        return done;
-    }
-
-    public Boolean CreateConfig(String fileName,String namespace,String targetClusterCode,String action) throws FileNotFoundException{
-
-        boolean done = false;
-
-        if(StringUtils.isEmpty(action) || StringUtils.isNull(action)) {
-            log.error("action should not be null");
-            return done;
-        }
-        if(!(action.equals("update") || action.equals("delete"))){
-            log.error("action should be update or delete");
-            return done;
-        }
-
-        File file = new File(fileName);
-        if (!file.exists() || !file.isFile()) {
-            log.error("File {} does not exist", fileName);
-            return done;
-        }
-
-        try (KubernetesClient client = clientUtils.ClientBuilder(targetClusterCode)) {
-
-            List<HasMetadata> resources = client.load(new FileInputStream(fileName)).get();
-            if (resources.isEmpty()) {
-                log.error("No resources loaded from file: {}", fileName);
-                return false;
-            }
-            HasMetadata resource = resources.get(0);
-            if (resource instanceof ConfigMap){
+            } else if (resource instanceof ConfigMap){
                 ConfigMap config = (ConfigMap) resource;
                 log.info("Creating cm in namespace {}", namespace);
                 if(action.equals("update")){
@@ -197,45 +161,7 @@ public class Commit {
                     log.info("secrets {} in namespace {} of cluster {} is {} deleted", sec.getMetadata().getName(),namespace,targetClusterCode,delete);
                     done = true;
                 }
-            }else {
-                log.error("Loaded resource {} is not a valid configure! ", resource);
-                done = false;
-            }
-        }catch (Exception e){
-            log.error(e.getMessage());
-            done = false;
-        }
-        return done;
-    }
-
-    public Boolean CreateNetwork(String fileName,String namespace,String targetClusterCode,String action) throws FileNotFoundException{
-
-        boolean done = false;
-
-        if(StringUtils.isEmpty(action) || StringUtils.isNull(action)) {
-            log.error("action should not be null");
-            return done;
-        }
-        if(!(action.equals("update") || action.equals("delete"))){
-            log.error("action should be update or delete");
-            return done;
-        }
-
-        File file = new File(fileName);
-        if (!file.exists() || !file.isFile()) {
-            log.error("File {} does not exist", fileName);
-            return done;
-        }
-
-        try (KubernetesClient client = clientUtils.ClientBuilder(targetClusterCode)) {
-
-            List<HasMetadata> resources = client.load(new FileInputStream(fileName)).get();
-            if (resources.isEmpty()) {
-                log.error("No resources loaded from file: {}", fileName);
-                return done;
-            }
-            HasMetadata resource = resources.get(0);
-            if (resource instanceof Service){
+            }else if (resource instanceof Service){
                 Service svc = (Service) resource;
                 log.info("Creating service in namespace {}", namespace);
                 if(action.equals("update")){
@@ -259,45 +185,7 @@ public class Commit {
                     log.info("ingresses {} in namespace {} of cluster {} is {} deleted", ing.getMetadata().getName(),namespace,targetClusterCode,delete);
                     done = true;
                 }
-            }else {
-                log.error("Loaded resource {} is not a valid networking resurce! ", resource);
-                done = false;
-            }
-        }catch (Exception e){
-            log.error(e.getMessage());
-            done = false;
-        }
-        return done;
-    }
-
-    public Boolean CreateStorage(String fileName,String namespace,String targetClusterCode,String action) throws FileNotFoundException{
-
-        boolean done = false;
-
-        if(StringUtils.isEmpty(action) || StringUtils.isNull(action)) {
-            log.error("action should not be null");
-            return false;
-        }
-        if(!(action.equals("update") || action.equals("delete"))){
-            log.error("action should be update or delete");
-            return false;
-        }
-
-        File file = new File(fileName);
-        if (!file.exists() || !file.isFile()) {
-            log.error("File {} does not exist", fileName);
-            return false;
-        }
-
-        try (KubernetesClient client = clientUtils.ClientBuilder(targetClusterCode)) {
-
-            List<HasMetadata> resources = client.load(new FileInputStream(fileName)).get();
-            if (resources.isEmpty()) {
-                log.error("No resources loaded from file: {}", fileName);
-                return false;
-            }
-            HasMetadata resource = resources.get(0);
-            if (resource instanceof PersistentVolume){
+            }else if (resource instanceof PersistentVolume){
                 PersistentVolume oldpv = (PersistentVolume) resource;
                 log.info("Creating pv {}", oldpv);
                 if(action.equals("update")){
@@ -333,45 +221,7 @@ public class Commit {
                     log.info("storageClasses {} in namespace {} of cluster {} is {} deleted", oldsc.getMetadata().getName(),namespace,targetClusterCode,delete);
                     done = true;
                 }
-            }else {
-                log.error("Loaded resource {} is not a valid storage! ", resource);
-                done = false;
-            }
-        }catch (Exception e){
-            log.error(e.getMessage());
-            done = false;
-        }
-        return done;
-    }
-
-    public Boolean CreateResource(String fileName,String namespace,String targetClusterCode,String action) throws FileNotFoundException{
-
-        boolean done = false;
-
-        if(StringUtils.isEmpty(action) || StringUtils.isNull(action)) {
-            log.error("action should not be null");
-            return false;
-        }
-        if(!(action.equals("update") || action.equals("delete"))){
-            log.error("action should be update or delete");
-            return false;
-        }
-
-        File file = new File(fileName);
-        if (!file.exists() || !file.isFile()) {
-            log.error("File {} does not exist", fileName);
-            return false;
-        }
-
-        try (KubernetesClient client = clientUtils.ClientBuilder(targetClusterCode)) {
-
-            List<HasMetadata> resources = client.load(new FileInputStream(fileName)).get();
-            if (resources.isEmpty()) {
-                log.error("No resources loaded from file: {}", fileName);
-                return false;
-            }
-            HasMetadata resource = resources.get(0);
-            if (resource instanceof Namespace){
+            }else if (resource instanceof Namespace){
                 Namespace oldns = (Namespace) resource;
                 log.info("Creating ns {}", oldns);
                 if(action.equals("update")){
@@ -447,7 +297,7 @@ public class Commit {
                     done = true;
                 }
             }else {
-                log.error("Loaded resource {} is not a valid resource! ", resource);
+                log.error("Loaded resource {} is not a valid resourceKind of workload! ", resource);
                 done = false;
             }
         }catch (Exception e){

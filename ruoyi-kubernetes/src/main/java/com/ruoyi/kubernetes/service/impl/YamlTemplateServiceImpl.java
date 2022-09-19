@@ -1,24 +1,26 @@
 package com.ruoyi.kubernetes.service.impl;
 
+import com.ruoyi.common.utils.file.FileUtils;
 import com.ruoyi.kubernetes.domain.ResourceInfo;
 import com.ruoyi.kubernetes.domain.YamlTemplate;
 import com.ruoyi.kubernetes.mapper.YamlTemplateMapper;
 import com.ruoyi.kubernetes.service.ResourceInfoService;
 import com.ruoyi.kubernetes.service.YamlTemplateService;
+import com.ruoyi.kubernetes.utils.GeneralUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 @Service
@@ -31,6 +33,9 @@ public class YamlTemplateServiceImpl implements YamlTemplateService {
 
     @Autowired
     private ResourceInfoService resourceInfoService;
+
+    @Autowired
+    private GeneralUtils generalUtils;
 
     @Override
     public int addYamlTemplate(YamlTemplate yamlTemplate) {
@@ -68,6 +73,7 @@ public class YamlTemplateServiceImpl implements YamlTemplateService {
     }
 
     @Override
+    @Transactional
     public String uploadYaml(MultipartFile file){
 
         try {
@@ -80,9 +86,15 @@ public class YamlTemplateServiceImpl implements YamlTemplateService {
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
-
+            Map<String, String> kindAndNameMap = generalUtils.resourceInitialResolver(yamlContent.toString());
+            String yamlName = kindAndNameMap.get("name")+"-"+kindAndNameMap.get("kind")+".yaml";
+            String savedYamlContentPath = "C:\\Users\\admin\\Desktop\\savedYamls\\"+yamlName;
+            File storeYaml = new File(savedYamlContentPath);
+            try(FileOutputStream fileOutputStream = new FileOutputStream(storeYaml)){
+                FileUtils.writeBytes(savedYamlContentPath,fileOutputStream);
+            }
             YamlTemplate yamlTemplate = new YamlTemplate();
-            yamlTemplate.setYamlName(fileName);
+            yamlTemplate.setYamlName(yamlName);
             yamlTemplate.setYamlContent(yamlContent.toString());
             yamlTemplate.setStatus("uploaded");
             int addCount = yamlTemplateMapper.addYamlTemplate(yamlTemplate);

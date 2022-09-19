@@ -59,7 +59,9 @@ public class ResourceConfigServiceImpl implements ResourceConfigService {
         resourceCluster.setClusterCode(resourceConfig.getClusterCode());
         resourceCluster.setNamespaceCode(resourceConfig.getNamespaceCode());
         resourceCluster.setStatus("waitCommit");
-        resourceCluster.setYamlContent(resourceInfo.getYamlContent());
+        //此处ResourceCluster用于向Kubernetes的API Server发送资源（如Pod等）的创建请求，客户端库的函数/方法的参数为InputStream，
+        //该Input Stream由创建当前资源对应的Yaml文件获取，故此处对象属性名称虽为yamlContent，但存储了yaml文件的绝对路径
+        resourceCluster.setYamlContentName(resourceInfo.getYamlContent());
         resourceInfoService.updateResource(resourceInfo);
         resourceClusterService.createResource(resourceCluster);
         return resourceConfigMapper.addResourceConfig(resourceConfig);

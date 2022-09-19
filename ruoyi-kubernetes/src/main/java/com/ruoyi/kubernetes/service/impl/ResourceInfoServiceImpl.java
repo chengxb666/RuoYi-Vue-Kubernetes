@@ -5,6 +5,7 @@ import com.ruoyi.kubernetes.domain.ResourceKind;
 import com.ruoyi.kubernetes.domain.YamlTemplate;
 import com.ruoyi.kubernetes.mapper.ResourceInfoMapper;
 import com.ruoyi.kubernetes.service.ResourceInfoService;
+import com.ruoyi.kubernetes.utils.GeneralUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,34 +23,17 @@ public class ResourceInfoServiceImpl implements ResourceInfoService {
     @Autowired
     private ResourceInfoMapper resourceInfoMapper;
 
-    public Map<String,String> resourceInitialResolver(String yamlContent) throws Exception {
-        Yaml yaml = new Yaml();
-        Map<String,String> result = new HashMap<>();
-        Map<String, Object> loadedYamlContent = (Map<String, Object>) yaml.load(yamlContent);
-        Set<String> yamlKeys = loadedYamlContent.keySet();
-        if(yamlKeys.contains("kind")){
-            String resourceKind = (String) loadedYamlContent.get("kind");
-            result.put("kind",resourceKind);
-        }else if(yamlKeys.contains("metadata")){
-            Map<String, Object> metadata = (Map<String, Object>)loadedYamlContent.get("metadata");
-            String resourceName = (String) metadata.get("name");
-            result.put("name",resourceName);
-            if(metadata.containsKey("namespace")){
-                String resourceNamespace = (String) metadata.get("namespace");
-                result.put("namespace",resourceNamespace);
-            }
-        }  else{
-            throw new Exception("The yaml doesnot contain keyword named kind or metadata");
-        }
-        return result;
-    }
+    @Autowired
+    private GeneralUtils generalUtils;
 
     @Override
     public ResourceInfo declearResource(YamlTemplate yamlTemplate) throws Exception {
-        Map<String, String> resourceInitialResult = resourceInitialResolver(yamlTemplate.getYamlContent());
+        Map<String, String> resourceInitialResult = generalUtils.resourceInitialResolver(yamlTemplate.getYamlContent());
         ResourceInfo resourceInfo = new ResourceInfo();
         resourceInfo.setResourceKind(resourceInitialResult.get("kind"));
+        log.info("kind is: {}",resourceInitialResult.get("kind"));
         resourceInfo.setResourceName(resourceInitialResult.get("name"));
+        log.info("name is: {}",resourceInitialResult.get("name"));
         if(resourceInitialResult.containsKey("namespace")){
             resourceInfo.setNamespaceCode(resourceInitialResult.get("namespace"));
         }
