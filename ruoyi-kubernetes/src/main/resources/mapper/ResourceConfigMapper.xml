@@ -37,6 +37,19 @@
         </where>
     </select>
 
+    <select id="queryResourceConfigByNameAndKind" resultMap="ResourceConfigResult">
+        select resource_config_id, resource_config_name,resource_name,resource_kind,namespace_code,cluster_code,create_by, create_time, update_by, update_time, remark
+        from resource_config
+        <where>
+            <if test="resourceName!=null">
+                and resource_name = #{resourceName}
+            </if>
+            <if test="resourceKind!=null">
+                and resource_kind = #{resourceKind}
+            </if>
+        </where>
+    </select>
+
     <select id="query" resultMap="ResourceConfigResult">
         select resource_config_id, resource_config_name,resource_name,resource_kind,namespace_code,cluster_code,create_by, create_time, update_by, update_time, remark
         from resource_config

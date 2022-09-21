@@ -14,7 +14,7 @@ public class ResourceConfig extends BaseEntity {
     String resourceName;
     String resourceKind;
     String namespaceCode;
-    String ClusterCode;
+    String clusterCode;
     String creatUser;
     Timestamp createTime;
     String updateUser;

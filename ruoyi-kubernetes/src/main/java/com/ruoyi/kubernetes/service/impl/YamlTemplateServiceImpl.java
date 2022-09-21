@@ -10,6 +10,7 @@ import com.ruoyi.kubernetes.utils.GeneralUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +37,9 @@ public class YamlTemplateServiceImpl implements YamlTemplateService {
 
     @Autowired
     private GeneralUtils generalUtils;
+
+    @Value("${ruoyi.profile}")
+    private String AbsoluteFilePathPrefix;
 
     @Override
     public int addYamlTemplate(YamlTemplate yamlTemplate) {
@@ -88,10 +92,10 @@ public class YamlTemplateServiceImpl implements YamlTemplateService {
             }
             Map<String, String> kindAndNameMap = generalUtils.resourceInitialResolver(yamlContent.toString());
             String yamlName = kindAndNameMap.get("name")+"-"+kindAndNameMap.get("kind")+".yaml";
-            String savedYamlContentPath = "C:\\Users\\admin\\Desktop\\savedYamls\\"+yamlName;
+            String savedYamlContentPath = AbsoluteFilePathPrefix+yamlName;
             File storeYaml = new File(savedYamlContentPath);
             try(FileOutputStream fileOutputStream = new FileOutputStream(storeYaml)){
-                FileUtils.writeBytes(savedYamlContentPath,fileOutputStream);
+                FileUtils.writeBytesToFile(yamlContent.toString().getBytes(),fileOutputStream);
             }
             YamlTemplate yamlTemplate = new YamlTemplate();
             yamlTemplate.setYamlName(yamlName);

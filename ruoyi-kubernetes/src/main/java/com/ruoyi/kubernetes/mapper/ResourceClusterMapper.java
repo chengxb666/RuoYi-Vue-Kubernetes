@@ -14,7 +14,7 @@ public interface ResourceClusterMapper {
                 @Param("resourceKind") String resourceKind, @Param("namespaceCode") String namespaceCode);
     public ResourceCluster queryResourceById(int resourceClusterId);
     public ResourceCluster queryResourceByName(String resourceName);
-    ResourceCluster queryResourceByNameAndKind(@Param("resourceKind") String resourceKind,@Param("resourceName") String resourceName);
+    List<ResourceCluster> queryResourceByNameAndKind(@Param("resourceKind") String resourceKind,@Param("resourceName") String resourceName);
     List<ResourceCluster> queryResourceByKind(String resourceKind);
     public int updateResource(ResourceCluster resourceCluster);
     List<ResourceCluster> query();

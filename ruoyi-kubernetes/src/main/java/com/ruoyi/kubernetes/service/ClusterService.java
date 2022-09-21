@@ -12,5 +12,5 @@ public interface ClusterService {
     public Cluster queryByName(String clusterCode);
     public int updateCluster(Cluster cluster);
     public List<Cluster> queryAll();
-
+    public List<String> queryClusterCodes() throws Exception;
 }

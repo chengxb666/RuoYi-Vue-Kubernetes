@@ -6,6 +6,7 @@ import com.ruoyi.kubernetes.service.ClusterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.common.utils.StringUtils;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -58,5 +59,14 @@ public class ClusterServiceImpl implements ClusterService{
     @Override
     public List<Cluster> queryAll() {
         return clusterMapper.query();
+    }
+
+    @Override
+    public List<String> queryClusterCodes() throws Exception {
+        List<String> clusterCodes = clusterMapper.queryClusterCode();
+        if(CollectionUtils.isEmpty(clusterCodes)){
+            throw new Exception("There is no kubernetes cluster managed by it");
+        }
+        return clusterCodes;
     }
 }

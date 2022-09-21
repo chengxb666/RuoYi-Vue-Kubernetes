@@ -27,6 +27,11 @@ public class ResourceInfoServiceImpl implements ResourceInfoService {
     private GeneralUtils generalUtils;
 
     @Override
+    public List<ResourceInfo> query(){
+        return resourceInfoMapper.query();
+    }
+
+    @Override
     public ResourceInfo declearResource(YamlTemplate yamlTemplate) throws Exception {
         Map<String, String> resourceInitialResult = generalUtils.resourceInitialResolver(yamlTemplate.getYamlContent());
         ResourceInfo resourceInfo = new ResourceInfo();

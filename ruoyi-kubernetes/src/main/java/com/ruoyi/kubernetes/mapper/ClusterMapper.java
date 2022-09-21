@@ -14,4 +14,5 @@ public interface ClusterMapper {
     public Cluster queryByName(String clusterCode);
     public int updateCluster(Cluster cluster);
     List<Cluster> query();
+    List<String> queryClusterCode();
 }

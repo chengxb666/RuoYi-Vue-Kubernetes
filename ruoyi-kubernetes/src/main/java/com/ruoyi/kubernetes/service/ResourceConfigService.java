@@ -7,6 +7,7 @@ import java.util.List;
 public interface ResourceConfigService {
     ResourceConfig queryResourceConfigById(int resourceConfigId);
     ResourceConfig queryResourceConfigByName(String resourceConfigName);
+    List<ResourceConfig> queryResourceConfigByNameAndKind(String resourceName, String resourceKind);
     List<ResourceConfig> query();
     int addResourceConfig(ResourceConfig resourceConfig) throws Exception;
     int updateResourceConfigById(ResourceConfig resourceConfig);

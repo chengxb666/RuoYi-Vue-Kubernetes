@@ -11,6 +11,7 @@ import com.ruoyi.kubernetes.utils.Commit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -35,19 +36,17 @@ public class ResourceClusterServiceImpl implements ResourceClusterService {
     @Autowired
     private Commit commit;
 
+    @Value("${ruoyi.profile}")
+    private String AbsoluteFilePathPrefix;
+
     @Override
     @Transactional
     public int createResource(ResourceCluster resourceCluster) throws Exception {
-        String action = "update";
-        ResourceCluster queriedResourceCluster = this.queryResourceClusterByNameAndKind(resourceCluster.getResourceName(), resourceCluster.getResourceKind());
-        if(null != queriedResourceCluster){
+
+        List<ResourceCluster> queriedResourceCluster = this.queryResourceClusterByNameAndKind(resourceCluster.getResourceName(), resourceCluster.getResourceKind());
+        if(!CollectionUtils.isEmpty(queriedResourceCluster)){
             log.error("Resource named {} is existed", resourceCluster.getResourceName());
             throw new Exception("Resource named " + resourceCluster.getResourceName() + "is existed");
-        }
-        boolean commitResource = this.commitResource(resourceCluster, action);
-        if(!commitResource){
-            log.error("Resource named {} is failed to create", resourceCluster.getResourceName());
-            throw new Exception("Resource named " + resourceCluster.getResourceName() + "is failed to create");
         }
         YamlTemplate yamlTemplate = yamlTemplateService.queryYamlByName(resourceCluster.getYamlContentName());
         if(null != yamlTemplate){
@@ -67,33 +66,24 @@ public class ResourceClusterServiceImpl implements ResourceClusterService {
     @Override
     @Transactional
     public int updateResource(ResourceCluster resourceCluster) throws Exception {
-        String action = "update";
-        ResourceCluster queriedResourceCluster = this.queryResourceClusterByNameAndKind(resourceCluster.getResourceName(), resourceCluster.getResourceKind());
-        if(null == queriedResourceCluster){
+
+        List<ResourceCluster> queriedResourceCluster = this.queryResourceClusterByNameAndKind(resourceCluster.getResourceName(), resourceCluster.getResourceKind());
+        if(CollectionUtils.isEmpty(queriedResourceCluster)){
             log.error("Resource named {} is not existed", resourceCluster.getResourceName());
             throw new Exception("Resource named " + resourceCluster.getResourceName() + "is not existed");
         }
-        boolean commitResource = this.commitResource(resourceCluster, action);
-        if(!commitResource){
-            log.error("Resource named {} is failed to update", resourceCluster.getResourceName());
-            throw new Exception("Resource named " + resourceCluster.getResourceName() + "is failed to update");
-        }
+
         return resourceClusterMapper.updateResourceByNameAndKind(resourceCluster);
     }
 
     @Override
     @Transactional
     public int deleteResource(ResourceCluster resourceCluster) throws Exception {
-        String action = "delete";
-        ResourceCluster queriedResourceCluster = this.queryResourceClusterByNameAndKind(resourceCluster.getResourceName(), resourceCluster.getResourceKind());
-        if(null == queriedResourceCluster){
+
+        List<ResourceCluster> queriedResourceCluster = this.queryResourceClusterByNameAndKind(resourceCluster.getResourceName(), resourceCluster.getResourceKind());
+        if(CollectionUtils.isEmpty(queriedResourceCluster)){
             log.error("Resource named {} is not existed", resourceCluster.getResourceName());
             throw new Exception("Resource named " + resourceCluster.getResourceName() + "is not existed");
-        }
-        boolean commitResource = this.commitResource(resourceCluster, action);
-        if(!commitResource){
-            log.error("Resource named {} is failed to update", resourceCluster.getResourceName());
-            throw new Exception("Resource named " + resourceCluster.getResourceName() + "is failed to update");
         }
 
         YamlTemplate yamlTemplate = yamlTemplateService.queryYamlByName(resourceCluster.getYamlContentName());
@@ -113,7 +103,7 @@ public class ResourceClusterServiceImpl implements ResourceClusterService {
     }
 
     @Override
-    public ResourceCluster queryResourceClusterByNameAndKind(String resourceName, String resourceKind) {
+    public List<ResourceCluster> queryResourceClusterByNameAndKind(String resourceName, String resourceKind) {
         return resourceClusterMapper.queryResourceByNameAndKind(resourceKind,resourceName);
     }
 
@@ -131,7 +121,7 @@ public class ResourceClusterServiceImpl implements ResourceClusterService {
     public boolean commitResource(ResourceCluster resourceCluster, String action) throws FileNotFoundException {
         String clusterCode = resourceCluster.getClusterCode();
         String namespaceCode = resourceCluster.getNamespaceCode();
-        String yamlPath = "C:\\Users\\admin\\Desktop\\savedYamls\\"+resourceCluster.getYamlContentName();
+        String yamlPath = AbsoluteFilePathPrefix+resourceCluster.getYamlContentName();
         Boolean commited = commit.DoCommit(yamlPath, namespaceCode, clusterCode, action);
         return commited;
     }

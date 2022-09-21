@@ -64,6 +64,17 @@ public class FileUtils
         }
     }
 
+    public static void writeBytesToFile(byte[] data, OutputStream fos) throws IOException
+    {
+        try{
+            fos.write(data);
+        }
+        finally
+        {
+            IOUtils.close(fos);
+        }
+    }
+
     /**
      * 写数据到文件中
      *

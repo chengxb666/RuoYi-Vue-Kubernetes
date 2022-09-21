@@ -13,4 +13,5 @@ public interface ResourceInfoService {
     public int deleteResource(String resourceInfoName);
     ResourceInfo queryResourceInfoByNameAndKind(String resourceName,String resourceKind);
     List<ResourceInfo> queryResourceInfoByKind(String resourceKind) throws Exception;
+    public List<ResourceInfo> query();
 }

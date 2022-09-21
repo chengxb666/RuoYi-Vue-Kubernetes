@@ -26,6 +26,11 @@
         </where>
     </select>
 
+    <select id="queryClusterCode" resultType="String">
+        select cluster_code
+        from k8s_cluster
+    </select>
+
     <select id="queryByName" resultMap="ClusterResult">
         select cluster_id, cluster_code, master_url, token, status, create_by, create_time, update_by, update_time, remark
         from k8s_cluster

@@ -57,10 +57,12 @@ public class YamlTemplateController extends BaseController {
     @PostMapping("upload")
     public AjaxResult upload(@RequestParam("file")MultipartFile file) {
         if(file.isEmpty()){
+            log.error("no file upload,please check it");
             return toAjax(false);
         }
 
         String result = yamlTemplateService.uploadYaml(file);
+        log.info("file {} upload",file.getName());
         return toAjax(result.equals("上传成功")?true:false);
     }
 
