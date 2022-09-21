@@ -206,7 +206,7 @@ export default {
     handleDelete(row) {
       const resourceName = row.resourceName;
       this.$modal.confirm('是否确认删除名为"' + resourceName + '"的数据项？').then(function() {
-        return delResourceInfo(row);
+        return delResourceCluster(row);
       }).then(() => {
         this.getList();
         this.$modal.msgSuccess("删除成功");
